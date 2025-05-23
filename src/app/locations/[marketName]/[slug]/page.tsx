@@ -25,7 +25,7 @@ export default async function LocationDetailPage({
   params: Promise<Params>;
 }) {
   // 1) await the params object
-  const { marketName, slug } = await params;
+  const { slug } = await params;
   // 2) extract the ID
   const id = slug.split("-")[0];
   const loc = await getLocationById(id);

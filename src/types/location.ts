@@ -38,7 +38,7 @@ export interface Location {
   geoName: string; // e.g. "us"
   currency: string; // e.g. "USD"
   status: string; // e.g. "Closed"
-  printerSettings: any; // leave `any` unless you have detail
+  printerSettings: unknown;
   tags: string[];
   _disableUntil: string | null;
   _isVisible: boolean;
