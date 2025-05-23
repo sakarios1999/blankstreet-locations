@@ -1,9 +1,4 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./globals.css";
-
-const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -12,11 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
