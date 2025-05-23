@@ -12,7 +12,7 @@ export function LocationCard({ loc, isSelected, onClick }: LocationCardProps) {
   return (
     <div
       onClick={onClick}
-      className={`border rounded-lg p-4 cursor-pointer hover:shadow transition ${
+      className={`border rounded-lg p-4 cursor-pointer hover:shadow transition-shadow duration-150 ${
         isSelected ? "ring-2 ring-blue-500" : ""
       }`}
     >

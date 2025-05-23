@@ -1,13 +1,20 @@
 "use client";
 
 interface MapViewProps {
-  title: string | null;
+  lat: number;
+  lng: number;
 }
 
-export function MapView({ title }: MapViewProps) {
+export function MapView({ lat, lng }: MapViewProps) {
+  const src = `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
   return (
-    <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-      {title ? `Map for ${title}` : "Select a location to view on map"}
+    <div className="w-full h-64 mb-6 rounded overflow-hidden">
+      <iframe
+        src={src}
+        className="w-full h-full"
+        allowFullScreen
+        loading="lazy"
+      />
     </div>
   );
 }

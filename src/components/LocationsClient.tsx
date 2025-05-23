@@ -1,58 +1,48 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation"; // ← add this
 import type { Location } from "@/types/location";
 import { groupBy } from "@/utils/groupBy";
-
 import { CityTabs } from "./CityTabs";
 import { LocationGrid } from "./LocationGrid";
-import { MapView } from "./MapView";
-import { LocationDetails } from "./LocationDetails";
+import { slugify } from "@/utils/slugify";
 
 interface Props {
   locations: Location[];
 }
 
 export default function LocationsClient({ locations }: Props) {
-  const { byCity, cities } = useMemo(() => {
-    const map = groupBy(locations, (l) => l.marketDisplayName);
-    return { byCity: map, cities: Object.keys(map) };
-  }, [locations]);
+  const router = useRouter(); // now defined
 
-  const [selectedCity, setSelectedCity] = useState(() => cities[0] || "");
-  const [selectedLocId, setSelectedLocId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setSelectedLocId(null);
-  }, [selectedCity]);
-
-  const selected = useMemo(
-    () => byCity[selectedCity]?.find((l) => l.id === selectedLocId) || null,
-    [byCity, selectedCity, selectedLocId]
+  // group locations by market slug
+  const byMarket = useMemo(
+    () => groupBy(locations, (loc) => loc.marketName),
+    [locations]
   );
+  const markets = Object.keys(byMarket);
+
+  const [selectedMarket, setSelectedMarket] = useState(markets[0] || "");
 
   return (
-    <main className="p-4">
-      <h1 className="text-3xl font-bold mb-6">Blank Street Locations</h1>
+    <main className="p-6">
+      <h1 className="text-3xl font-bold mb-4">All Locations</h1>
 
       <CityTabs
-        cities={cities}
-        selectedCity={selectedCity}
-        onSelect={setSelectedCity}
+        cities={markets}
+        selectedCity={selectedMarket}
+        onSelect={setSelectedMarket}
       />
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        <LocationGrid
-          locations={byCity[selectedCity] || []}
-          selectedId={selectedLocId}
-          onSelect={setSelectedLocId}
-        />
-
-        <div className="flex-1 space-y-6">
-          <MapView title={selected?.name || null} />
-          {selected && <LocationDetails loc={selected} />}
-        </div>
-      </div>
+      <LocationGrid
+        locations={byMarket[selectedMarket] || []}
+        selectedId={null}
+        onSelect={(id) => {
+          const loc = byMarket[selectedMarket].find((l) => l.id === id)!;
+          const slug = `${id}-${slugify(loc.name)}`;
+          router.push(`/locations/${selectedMarket}/${slug}`);
+        }}
+      />
     </main>
   );
 }
