@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Blank Street Locations — Case Study
 
-## Getting Started
+A Next.js application replicating the Blank Street locations UI flow, with two screens:
+	1.	List of all locations, grouped by city.
+	2.	Detail view with embedded map and hours for a single location.
 
-First, run the development server:
+This case study prioritizes clean code, modularity, and maintainability over visual polish.
 
-```bash
+⸻
+
+📁 Project Structure
+
+src/
+├─ app/
+│  ├─ api/locations/route.ts      # server proxy
+│  ├─ locations/
+│  │  ├─ [marketName]/[slug]/page.tsx   # detail page
+│  │  └─ page.tsx               # list page
+│  ├─ layout.tsx                # root layout
+│  └─ page.tsx                  # redirect `/` → `/locations`
+├─ components/
+│  ├─ CityTabs.tsx
+│  ├─ LocationGrid.tsx
+│  ├─ LocationCard.tsx
+│  ├─ MapView.tsx
+│  └─ LocationDetails.tsx
+├─ services/
+│  └─ locations.ts              # data-fetching functions
+├─ utils/
+│  ├─ groupBy.ts                # array grouping helper
+│  └─ slugify.ts                # text slug generator
+└─ types/
+   └─ location.ts               # API type definitions
+
+
+⸻
+
+🛠️ Prerequisites
+	•	Node.js v16 or later
+	•	npm (bundled with Node.js) or yarn
+
+⸻
+
+⚙️ Installation
+	1.	Clone the repo
+
+git clone https://github.com/sakarios1999/blankstreet-locations.git
+cd blankstreet-locations
+
+
+	2.	Install dependencies
+
+npm install
+# or
+yarn install
+
+
+	3.	(Optional) Configure API URL
+By default the app calls https://api.blankstreet.com/locations. To override:
+
+export NEXT_PUBLIC_API_URL="https://your.proxy/api"
+
+⸻
+
+📦 Development
+
+Start the development server with live reload:
+
 npm run dev
 # or
 yarn dev
+
+Open http://localhost:3000 in your browser.
+
+⸻
+
+🚧 Production Build
+	1.	Build the app:
+
+npm run build
 # or
-pnpm dev
+
+yarn build
+
+2. **Start** in production mode:
+
+```bash
+npm start
 # or
-bun dev
-```
+yarn start
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+By default Next.js listens on port 3000. You can change it:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+PORT=4000 npm start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+⸻
 
-## Learn More
+🤝 License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT © Chris Sakr

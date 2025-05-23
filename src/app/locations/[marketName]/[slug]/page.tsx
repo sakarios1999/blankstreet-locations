@@ -1,37 +1,36 @@
-import type { Metadata } from "next";
-import type { LocationsResponse } from "@/types/location";
+import Link from "next/link";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getLocationById } from "@/services/api";
 
-// Generate metadata if you like
+interface Params {
+  marketName: string;
+  slug: string;
+}
+
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ marketName: string; slug: string }>;
+  params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
   const id = slug.split("-")[0];
-  const res = await fetch("https://api.blankstreet.com/locations");
-  const { locations }: LocationsResponse = await res.json();
-  const loc = locations.find((l) => l.id === id);
+  const loc = await getLocationById(id);
   return { title: loc?.name ?? "Location Detail" };
 }
 
 export default async function LocationDetailPage({
   params,
 }: {
-  params: Promise<{ marketName: string; slug: string }>;
+  params: Promise<Params>;
 }) {
   // 1) await the params object
   const { marketName, slug } = await params;
   // 2) extract the ID
   const id = slug.split("-")[0];
+  const loc = await getLocationById(id);
+  if (!loc) notFound();
 
-  const res = await fetch("https://api.blankstreet.com/locations");
-  if (!res.ok) throw new Error("Failed to load location");
-  const { locations }: LocationsResponse = await res.json();
-  const loc = locations.find((l) => l.id === id);
-  if (!loc) return <p className="p-6">Location not found</p>;
-
-  // build a simple embed map URL
   const mapSrc = `https://www.google.com/maps?q=${loc.latitude},${loc.longitude}&z=15&output=embed`;
 
   return (
@@ -39,7 +38,6 @@ export default async function LocationDetailPage({
       <h1 className="text-3xl font-bold mb-4">{loc.name}</h1>
       <p className="text-gray-700 mb-6">{loc.address}</p>
 
-      {/* Embedded map */}
       <div className="w-full h-64 mb-6 rounded overflow-hidden">
         <iframe
           src={mapSrc}
@@ -49,7 +47,6 @@ export default async function LocationDetailPage({
         />
       </div>
 
-      {/* Hours */}
       <section className="mb-6">
         <h2 className="text-2xl font-semibold mb-2">Hours</h2>
         <ul className="text-gray-600 space-y-1">
@@ -61,12 +58,9 @@ export default async function LocationDetailPage({
         </ul>
       </section>
 
-      {/* Back link */}
-      <p>
-        <a href="/locations" className="text-blue-600 hover:underline">
-          ← Back to all locations
-        </a>
-      </p>
+      <Link href="/locations" className="text-blue-600 hover:underline">
+        ← Back to locations
+      </Link>
     </main>
   );
 }
